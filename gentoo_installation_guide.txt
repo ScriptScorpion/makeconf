@@ -1,0 +1,32 @@
+# Partition the disk according to the https://wiki.archlinux.org/title/Partitioning#Example_layouts
+mount /dev/<root_partition> /mnt/gentoo && cd /mnt/gentoo # change <root_partition> to the root partition name on the formated disk
+links https://www.gentoo.org/downloads # download stage3 archive
+tar xpvf stage3-* --xattrs-include='*.*' --numeric-owner -C /mnt/gentoo
+rm /mnt/gentoo/etc/portage/make.conf && wget -P /mnt/gentoo/etc/portage/ https://raw.githubusercontent.com/ScriptScorpion/makeconf/refs/heads/main/make.conf
+vim /mnt/gentoo/etc/fstab # edit fstab according to the partition layout
+cp -L /etc/resolv.conf /mnt/gentoo/etc/
+mount --types proc /proc /mnt/gentoo/proc
+mount --rbind /sys /mnt/gentoo/sys
+mount --make-rslave /mnt/gentoo/sys # if you need systemd
+mount --rbind /dev /mnt/gentoo/dev
+mount --make-rslave /mnt/gentoo/dev # if you need systemd
+mount --bind /run /mnt/gentoo/run
+mount --make-slave /mnt/gentoo/run
+chroot /mnt/gentoo /bin/bash
+source /etc/profile && export PS1="\u:\w$ "
+emerge-webrsync
+ln -sf ../usr/share/zoneinfo/Europe/<City> /etc/localtime # change <City> to your city
+emerge vim
+vim /etc/locale.gen # uncomment en_US
+locale-gen
+eselect locale set 4
+env-update && source /etc/profile && export PS1="\u:\w$ "
+echo gentoo > /etc/hostname
+echo -e "127.0.0.1\tgentoo" >> /etc/hosts
+passwd
+emerge installkernel
+emerge gentoo-kernel-bin
+emerge dhcpcd
+rc-update add dhcpcd default
+emerge grub
+# Install grub bootloader according to the https://wiki.archlinux.org/title/GRUB 
