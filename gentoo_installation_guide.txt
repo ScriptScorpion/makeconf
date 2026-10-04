@@ -1,8 +1,9 @@
 # Partition the disk according to the https://wiki.archlinux.org/title/Partitioning#Example_layouts
-mount /dev/<root_partition> /mnt/gentoo && cd /mnt/gentoo # change <root_partition> to the root partition name on the formated disk
+mount /dev/<root_partition> /mnt/gentoo # change <root_partition> to the root partition name on the formated disk
+cd /mnt/gentoo
 links https://www.gentoo.org/downloads # download stage3 archive
 tar xpvf stage3-* --xattrs-include='*.*' --numeric-owner -C /mnt/gentoo
-rm /mnt/gentoo/etc/portage/make.conf && wget -P /mnt/gentoo/etc/portage/ https://raw.githubusercontent.com/ScriptScorpion/makeconf/refs/heads/main/make.conf
+rm -f /mnt/gentoo/etc/portage/make.conf && wget -P /mnt/gentoo/etc/portage/ https://raw.githubusercontent.com/ScriptScorpion/makeconf/refs/heads/main/make.conf
 vim /mnt/gentoo/etc/fstab # edit fstab according to the partition layout
 cp -L /etc/resolv.conf /mnt/gentoo/etc/
 mount --types proc /proc /mnt/gentoo/proc
